@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { userService } from '../api/userService';
 import { requestService } from '../api/requestService';
 import { checkCompatibility, matchingSkills } from '../utils/compatibility';
+import { resolvePhotoUrl } from '../utils/resolvePhotoUrl';
 
 const API = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080';
 
@@ -137,7 +138,7 @@ export default function UserProfile() {
             justifyContent: 'center', fontSize: '2.2rem', overflow: 'hidden',
           }}>
             {profile.profilePhotoUrl
-              ? <img src={API + profile.profilePhotoUrl} alt={profile.name}
+              ? <img src={resolvePhotoUrl(API, profile.profilePhotoUrl)} alt={profile.name}
                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : profile.name?.[0]?.toUpperCase()}
           </div>
@@ -339,7 +340,7 @@ export default function UserProfile() {
                       justifyContent: 'center', fontSize: '1rem', overflow: 'hidden',
                     }}>
                       {r.reviewerPhotoUrl
-                        ? <img src={API + r.reviewerPhotoUrl} alt={r.reviewerName}
+                        ? <img src={resolvePhotoUrl(API, r.reviewerPhotoUrl)} alt={r.reviewerName}
                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : r.reviewerName?.[0]?.toUpperCase()}
                     </div>
