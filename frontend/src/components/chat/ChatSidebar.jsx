@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import OnlineStatus from './OnlineStatus';
+import { resolvePhotoUrl } from '../../utils/resolvePhotoUrl';
 
 const API = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080';
 
@@ -58,7 +59,7 @@ export default function ChatSidebar({ rooms, activeRoomId, myId, onlineUsers, lo
                   justifyContent: 'center', fontSize: '1.1rem', overflow: 'hidden',
                 }}>
                   {otherPhoto
-                    ? <img src={API + otherPhoto} alt={otherName}
+                    ? <img src={resolvePhotoUrl(API, otherPhoto)} alt={otherName}
                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : otherName?.[0]?.toUpperCase()}
                 </div>
