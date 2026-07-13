@@ -4,7 +4,7 @@ import com.skillify.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "messages",
@@ -46,5 +46,5 @@ public class Message {
 
     @Column(nullable = false)
     @Builder.Default
-    private LocalDateTime sentAt = LocalDateTime.now();
+    private Instant sentAt = Instant.now();
 }
