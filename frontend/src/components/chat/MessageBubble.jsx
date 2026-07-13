@@ -25,9 +25,8 @@ function ReadTick({ status }) {
   return <span style={{ color: 'var(--color-ink-soft)', fontSize: '0.7rem' }}>✓</span>;
 }
 
-export default function MessageBubble({ message, isMine, showAvatar, showDate, prevDate }) {
+export default function MessageBubble({ message, isMine, showAvatar, showDateDivider }) {
   const dateLabel = formatDate(message.sentAt);
-  const showDateDivider = showDate && dateLabel !== prevDate;
 
   return (
     <>
