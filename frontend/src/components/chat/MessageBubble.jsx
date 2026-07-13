@@ -1,3 +1,5 @@
+import { resolvePhotoUrl } from '../../utils/resolvePhotoUrl';
+
 const API = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080';
 
 function formatTime(ts) {
@@ -25,8 +27,9 @@ function ReadTick({ status }) {
   return <span style={{ color: 'var(--color-ink-soft)', fontSize: '0.7rem' }}>✓</span>;
 }
 
-export default function MessageBubble({ message, isMine, showAvatar, showDateDivider }) {
+export default function MessageBubble({ message, isMine, showAvatar, showDate, prevDate }) {
   const dateLabel = formatDate(message.sentAt);
+  const showDateDivider = showDate && dateLabel !== prevDate;
 
   return (
     <>
@@ -54,7 +57,7 @@ export default function MessageBubble({ message, isMine, showAvatar, showDateDiv
             visibility: showAvatar ? 'visible' : 'hidden',
           }}>
             {message.senderPhoto
-              ? <img src={API + message.senderPhoto} alt=""
+              ? <img src={resolvePhotoUrl(API, message.senderPhoto)} alt=""
                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : message.senderName?.[0]?.toUpperCase()}
           </div>
