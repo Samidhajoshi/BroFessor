@@ -56,7 +56,6 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()   // SockJS handshake is HTTP
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
