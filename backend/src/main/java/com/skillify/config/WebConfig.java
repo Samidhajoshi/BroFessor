@@ -1,20 +1,14 @@
 package com.skillify.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Profile photos are now stored on Cloudinary and served directly from
+ * Cloudinary's CDN (see CloudinaryConfig + UserService.uploadPhoto), so this
+ * class no longer needs to expose a local /uploads/** static resource handler.
+ * Kept as an extension point for future WebMvc customization.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    @Value("${app.upload.dir}")
-    private String uploadDir;
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve profile photos at /uploads/** from the local upload directory
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/");
-    }
 }
