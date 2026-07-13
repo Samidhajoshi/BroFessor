@@ -4,7 +4,7 @@ import com.skillify.chat.entity.Message;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data @Builder
 public class MessageDTO {
@@ -17,7 +17,7 @@ public class MessageDTO {
     private String content;
     private String messageType;
     private String readStatus;
-    private LocalDateTime sentAt;
+    private Instant sentAt;
 
     public static MessageDTO from(Message m) {
         return MessageDTO.builder()
