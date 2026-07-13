@@ -5,6 +5,7 @@ import { publish, subscribe } from '../../api/websocket';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 import OnlineStatus from './OnlineStatus';
+import { resolvePhotoUrl } from '../../utils/resolvePhotoUrl';
 
 const API = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080';
 
@@ -115,15 +116,12 @@ export default function ChatWindow({ room, onlineUsers, onNewMessage }) {
   };
 
   // ── Group messages by sender for avatar display ───────────────────────────
-  const enriched = messages.map((msg, i) => {
-    const currDateKey = msg.sentAt?.slice(0, 10);
-    const prevDateKey = i === 0 ? null : messages[i - 1]?.sentAt?.slice(0, 10);
-    return {
-      ...msg,
-      showAvatar: i === 0 || messages[i - 1]?.senderId !== msg.senderId,
-      showDateDivider: i === 0 || currDateKey !== prevDateKey,
-    };
-  });
+  const enriched = messages.map((msg, i) => ({
+    ...msg,
+    showAvatar: i === 0 || messages[i - 1]?.senderId !== msg.senderId,
+    showDate: true,
+    prevDate: i === 0 ? null : messages[i - 1]?.sentAt?.slice(0, 10),
+  }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -140,7 +138,7 @@ export default function ChatWindow({ room, onlineUsers, onNewMessage }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
           }}>
             {otherPhoto
-              ? <img src={API + otherPhoto} alt={otherName}
+              ? <img src={resolvePhotoUrl(API, otherPhoto)} alt={otherName}
                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : otherName?.[0]?.toUpperCase()}
           </div>
@@ -179,7 +177,8 @@ export default function ChatWindow({ room, onlineUsers, onNewMessage }) {
             message={msg}
             isMine={msg.senderId === user.id}
             showAvatar={msg.showAvatar}
-            showDateDivider={msg.showDateDivider}
+            showDate={msg.showDate}
+            prevDate={msg.prevDate ? new Date(msg.prevDate).toLocaleDateString() : null}
           />
         ))}
         <TypingIndicator name={typingUser} />
