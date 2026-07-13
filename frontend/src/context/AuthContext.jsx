@@ -6,7 +6,13 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('skillify_user');
-    return stored ? JSON.parse(stored) : null;
+    if (!stored || stored === 'undefined' || stored === 'null') return null;
+    try {
+      return JSON.parse(stored);
+    } catch {
+      localStorage.removeItem('skillify_user');
+      return null;
+    }
   });
   const [token, setToken] = useState(() => localStorage.getItem('skillify_token'));
 
