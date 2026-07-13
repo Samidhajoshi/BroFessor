@@ -115,12 +115,15 @@ export default function ChatWindow({ room, onlineUsers, onNewMessage }) {
   };
 
   // ── Group messages by sender for avatar display ───────────────────────────
-  const enriched = messages.map((msg, i) => ({
-    ...msg,
-    showAvatar: i === 0 || messages[i - 1]?.senderId !== msg.senderId,
-    showDate: true,
-    prevDate: i === 0 ? null : messages[i - 1]?.sentAt?.slice(0, 10),
-  }));
+  const enriched = messages.map((msg, i) => {
+    const currDateKey = msg.sentAt?.slice(0, 10);
+    const prevDateKey = i === 0 ? null : messages[i - 1]?.sentAt?.slice(0, 10);
+    return {
+      ...msg,
+      showAvatar: i === 0 || messages[i - 1]?.senderId !== msg.senderId,
+      showDateDivider: i === 0 || currDateKey !== prevDateKey,
+    };
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -176,8 +179,7 @@ export default function ChatWindow({ room, onlineUsers, onNewMessage }) {
             message={msg}
             isMine={msg.senderId === user.id}
             showAvatar={msg.showAvatar}
-            showDate={msg.showDate}
-            prevDate={msg.prevDate ? new Date(msg.prevDate).toLocaleDateString() : null}
+            showDateDivider={msg.showDateDivider}
           />
         ))}
         <TypingIndicator name={typingUser} />
