@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { resolvePhotoUrl } from '../utils/resolvePhotoUrl';
 
 const API = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080';
 
@@ -23,7 +24,7 @@ export default function UserCard({ user, action }) {
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >
               {user.profilePhotoUrl
-                ? <img src={API + user.profilePhotoUrl} alt={user.name}
+                ? <img src={resolvePhotoUrl(API, user.profilePhotoUrl)} alt={user.name}
                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 : user.name?.[0]?.toUpperCase()}
             </div>
