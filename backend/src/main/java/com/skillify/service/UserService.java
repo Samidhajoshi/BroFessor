@@ -1,5 +1,7 @@
 package com.skillify.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.skillify.dto.*;
 import com.skillify.entity.*;
 import com.skillify.exception.ApiException;
@@ -13,10 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -27,9 +27,7 @@ public class UserService {
     private final UserSkillRepository userSkillRepository;
     private final PasswordEncoder passwordEncoder;
     private final NotificationService notificationService;
-
-    @org.springframework.beans.factory.annotation.Value("${app.upload.dir}")
-    private String uploadDir;
+    private final Cloudinary cloudinary;
 
     @Transactional(readOnly = true)
     public UserDTO getById(Long id) {
@@ -97,18 +95,24 @@ public class UserService {
             throw new ApiException("Image must be under 5 MB.", HttpStatus.BAD_REQUEST);
         }
 
-        Path dir = Paths.get(uploadDir);
-        Files.createDirectories(dir);
+        String publicId = "avatar_" + currentUser.getId() + "_" + UUID.randomUUID().toString().substring(0, 8);
 
-        String ext = contentType.equals("image/png") ? ".png"
-                   : contentType.equals("image/gif") ? ".gif" : ".jpg";
-        String filename = "avatar_" + currentUser.getId() + "_" + UUID.randomUUID().toString().substring(0, 8) + ext;
+        Map uploadResult;
+        try {
+            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                    "folder", "brofessor/avatars",
+                    "public_id", publicId,
+                    "overwrite", true,
+                    "resource_type", "image"
+            ));
+        } catch (IOException e) {
+            throw new ApiException("Failed to upload image. Please try again.", HttpStatus.BAD_GATEWAY);
+        }
 
-        Path dest = dir.resolve(filename);
-        Files.write(dest, file.getBytes());
+        String secureUrl = (String) uploadResult.get("secure_url");
 
         User user = findOrThrow(currentUser.getId());
-        user.setProfilePhotoUrl("/uploads/" + filename);
+        user.setProfilePhotoUrl(secureUrl);
         user = userRepository.save(user);
 
         return UserDTO.from(user);
