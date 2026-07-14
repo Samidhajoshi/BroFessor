@@ -104,7 +104,7 @@ The backend reads all secrets from environment variables, with safe local defaul
 | `DB_URL` | `jdbc:mysql://localhost:3306/brofessor?...` | Yes |
 | `DB_USERNAME` | `root` | Yes |
 | `DB_PASSWORD` | *(empty)* | Yes |
-| `JWT_SECRET` | dev placeholder (32+ bytes) | **Yes — replace this** |
+| `JWT_SECRET` | dev placeholder (32+ bytes) |Yes|
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Yes |
 | `GROQ_API_KEY` | *(none)* | Yes, for the AI analyzer |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | *(none)* | Yes, for photo uploads |
@@ -177,14 +177,6 @@ npm run preview   # to preview the production build locally
 
 ---
 
-## Notable Implementation Details
-
-- **JDK 25 + Lombok**: requires `annotationProcessorPaths` explicitly configured in the `maven-compiler-plugin` (already set up in `pom.xml`) with a recent enough Lombok version.
-- **Vite + SockJS**: SockJS expects a Node-style `global` object; this is polyfilled via `define: { global: 'globalThis' }` in `vite.config.js`.
-- **Skill matching is authoritative on the backend**: the frontend's `compatibility.js` mirrors the same rules for instant feedback, but `SkillRequestService` re-validates independently server-side — the cached user object on the client can go stale, so it can never be trusted as the sole gate.
-- **Static uploads**: `/uploads/**` is explicitly permitted in `SecurityConfig`, or profile photo requests will be blocked by Spring Security.
-
----
 
 ## API Overview
 
@@ -203,6 +195,5 @@ All routes except `/api/auth/**`, `/ws/**`, and `/error` require a `Authorizatio
 
 ---
 
-## License
+Try at : https://bro-fessor.vercel.app/
 
-Add your preferred license here (e.g., MIT).
